@@ -1,30 +1,31 @@
 package sergey.ermakov.project1;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
-public class ApiController {
-    ArrayList<String> messages=new ArrayList<>();
+public class User {
 
-    @GetMapping("books1")
-    public String getText() {
-        return ("Hello text");
-    }
+    ArrayList<String> names=new ArrayList<>();
+    ArrayList<Integer> ages=new ArrayList<Integer>();
 
-    @PostMapping("books")
-    public void createMessage(@RequestBody String mes){
-        messages.add(mes);
+
+
+    @PostMapping("users")
+    public void createUser(@RequestBody Integer age1,@RequestBody String mes){
+        names.add(mes);
+        ages.add(age1);
     }
 
     @GetMapping("books")
-    public List<String> getMessages(){
-        return messages;
+    public String getMessages(){
+        String s="";
+        for (int i=0;i<ages.size();i++){
+            s=s+"["+names.get(i)+"_"+ages.get(i)+"] ";
+        };
+        return  s;
     }
 
     @GetMapping("books/{index}")
@@ -42,5 +43,4 @@ public class ApiController {
         messages.remove((int)i);
         messages.add(i,mes);
     }
-
 }
