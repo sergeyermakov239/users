@@ -15,13 +15,24 @@ public class Topic {
         comments.remove((int) index);
     };
 
+    public void add(String text){
+        comments.add(text);
+    }
+
     public void update (int index,String text){
         comments.remove((int) index);
         comments.add(index,text);
     };
 
-    public ArrayList<String> print (){
+    public ArrayList<String> printComments (){
         return comments;
-    }
+    };
 
+    public String printTopic(){
+        return name;
+    };
+
+    public ArrayList<String> getComments() {
+        return comments;
+    };
 }
