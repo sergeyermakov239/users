@@ -8,37 +8,43 @@ import java.util.ArrayList;
 
 @RestController
 public class ApiController {
-    private ArrayList<User> users=new ArrayList<>();
+    private ArrayList<String> topics=new ArrayList<>();
 
 
-//curl -X POST http://localhost:8080/users -H 'Content-Type: application/json' -d '{"name1":"Sergey","age1":16}'
-    @PostMapping("users")
-    public void addUser(@RequestBody User user1){
-        users.add(user1);
+//curl -X POST http://localhost:8080/topics -H 'Content-Type: application/json' -d 'text'
+    @PostMapping("topics")
+    public void addTopic(@RequestBody String text){
+        topics.add(text);
     };
-//curl -X DELETE http://localhost:8080/users/1
-    @DeleteMapping("users/{index}")
-    public void deleteUser(@PathVariable("index") Integer index){
-        users.remove((int) index);
-    };
-
-    @GetMapping("users/{index}")
-    public String getUser(@PathVariable("index") Integer index){
-        return users.get(index).print();
+//curl -X DELETE http://localhost:8080/topics/1
+    @DeleteMapping("topics/{index}")
+    public void deleteTopic (@PathVariable("index") Integer index){
+        topics.remove((int) index);
     };
 
-    @GetMapping("users")
-    public String getUsers(){
-        String s="";
-        for (User u:users){
-            s+=u.print();
-        };
-        return s;
+    @GetMapping("topics/{index}")
+    public String getTopic(@PathVariable("index") Integer index){
+        return topics.get((int) index);
     };
-    //curl -X PUT http://localhost:8080/users/2 -H 'Content-Type: application/json' -d '21'
-    @PutMapping("users/{index}")
-    public void updateUser(@PathVariable("index") Integer index, @RequestBody Integer age1){
-        users.get(index).setAge(age1);
-    }
+
+    @GetMapping("topics")
+    public ArrayList<String> getTopics(){
+        return topics;
+    };
+    //curl -X PUT http://localhost:8080/topics/2 -H 'Content-Type: application/json' -d 'text10'
+    @PutMapping("topics/{index}")
+    public void updateTopic (@PathVariable("index") Integer index, @RequestBody String text){
+        topics.remove((int) index);
+        topics.add(index,text);
+    };
+    @GetMapping("topics/count")
+    public int countTopics(){
+        return topics.size();
+    };
+    //curl -X DELETE http://localhost:8080/topics/all
+    @DeleteMapping("topics/all")
+    public void deleteTopics (){
+        topics.clear();
+    };
 
 }
