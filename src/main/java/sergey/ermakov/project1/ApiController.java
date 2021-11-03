@@ -14,7 +14,7 @@ public class ApiController {
 //curl -X POST http://localhost:8080/topics -H 'Content-Type: application/json' -d 'text'
     @PostMapping("topics")
     public void addTopic(@RequestBody String text){
-        topics.add(new Topic(text,new ArrayList<String>()));
+        topics.add(new Topic(text));
     };
 //curl -X DELETE http://localhost:8080/topics/1
     @DeleteMapping("topics/{index}")
@@ -39,7 +39,7 @@ public class ApiController {
     @PutMapping("topics/{index}")
     public void updateTopic (@PathVariable("index") Integer index, @RequestBody String text){
         topics.remove((int) index);
-        topics.add(index,new Topic(text,new ArrayList<String>()));
+        topics.add(index,new Topic(text));
     };
     @GetMapping("topics/count")
     public int countTopics(){
@@ -51,10 +51,14 @@ public class ApiController {
         topics.clear();
     };
 
-    //curl -X POST http://localhost:8080/topics/1/comments -H 'Content-Type: application/json' -d 'comment1'
+
+
+
+
+    //curl -X POST http://localhost:8080/topics/1/comments -H 'Content-Type: application/json' -d '{"name1":"comment1","user1":"Sergey"}'
     @PostMapping("topics/{index}/comments")
-    public void addComment (@PathVariable("index") Integer index,@RequestBody String text ){
-        topics.get((int)index).add(text);
+    public void addComment (@PathVariable("index") Integer index,@RequestBody Comment comment ){
+        topics.get((int)index).add(comment);
     };
     //curl -X DELETE http://localhost:8080/topics/1/2/comments
     @DeleteMapping("topics/{index1}/{index2}/comments")
@@ -67,9 +71,47 @@ public class ApiController {
         topics.get((int) index1).update(index2,text);
     };
     @GetMapping("topics/{index}/comments")
-    public ArrayList<String> getComments(@PathVariable("index") Integer index){
+    public ArrayList<Comment> getComments(@PathVariable("index") Integer index){
         return topics.get((int) index).getComments();
 
+    };
+
+
+
+
+    @GetMapping("topics/users/{user}")
+    public ArrayList<Comment> getCommentsofUser(@PathVariable("user") String user){
+        ArrayList<Comment> a=new ArrayList<>();
+        for (Topic t:topics){
+            for (Comment c:t.getComments()){
+                if (c.getUser().equals(user)){
+                    a.add(c);
+                }
+            }
+        };
+        return a;
+    };
+    //curl -X PUT http://localhost:8080/topics/users/1/Sergey -H 'Content-Type: application/json' -d 'comment123'
+    @PutMapping("topics/users/{index}/{user}")
+    public void updateCommentofUser(@PathVariable("index") Integer index,@PathVariable("user") String user,@RequestBody String text){
+        boolean f=true;
+        for (int i=0;i<topics.get(index).getComments().size()&&f;i++){
+            if (topics.get(index).getComments().get(i).getUser().equals(user)){
+                f=false;
+                topics.get(index).update(i,text);
+            }
+        }
+    };
+    //curl -X DELETE http://localhost:8080/topics/users/Sergey
+    @DeleteMapping("topics/users/{user}")
+    public void deleteCommentsofUser(@PathVariable("user") String user){
+        for (Topic t:topics){
+            for (int i=t.getComments().size()-1;i>=0;i=i-1){
+                if (t.getComments().get(i).getUser().equals(user)){
+                    t.delete(i);
+                }
+            }
+        }
     }
 
 }
